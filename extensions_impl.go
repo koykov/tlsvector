@@ -888,6 +888,24 @@ func (e *ExtensionSignatureAlgorithms) AppendDescription(dst []byte, pad string)
 	return dst
 }
 
+func (e *ExtensionSignatureAlgorithms) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(hash byte, sa SignatureAlgorithm) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"name":"`...)
+		dst = append(dst, sa.String()...)
+		dst = append(dst, `","value":`...)
+		dst = strconv.AppendUint(dst, uint64(sa.Raw()), 10)
+		dst = append(dst, '}')
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionUseSRTP represents extension "use_srtp".
