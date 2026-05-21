@@ -759,6 +759,24 @@ func (e *ExtensionECPointFormats) AppendDescription(dst []byte, pad string) []by
 	return dst
 }
 
+func (e *ExtensionECPointFormats) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(format ECPointFormats) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"name":"`...)
+		dst = append(dst, format.String()...)
+		dst = append(dst, `","value":`...)
+		dst = strconv.AppendUint(dst, uint64(format.Raw()), 10)
+		dst = append(dst, '}')
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionSRP represents extension "srp".
