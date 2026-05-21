@@ -701,6 +701,24 @@ func (e *ExtensionSupportedGroups) AppendDescription(dst []byte, pad string) []b
 	return dst
 }
 
+func (e *ExtensionSupportedGroups) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(group EllipticCurve) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"name":"`...)
+		dst = append(dst, group.String()...)
+		dst = append(dst, `","value":`...)
+		dst = strconv.AppendUint(dst, uint64(group.Raw()), 10)
+		dst = append(dst, '}')
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionECPointFormats represents extension "ec_point_formats".
