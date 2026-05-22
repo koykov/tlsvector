@@ -969,6 +969,23 @@ func (e *ExtensionUseSRTP) AppendDescription(dst []byte, pad string) []byte {
 	return dst
 }
 
+func (e *ExtensionUseSRTP) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"mki":"`...)
+	dst = append(dst, e.MKI()...)
+	dst = append(dst, `",`...)
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(profile uint16) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = strconv.AppendUint(dst, uint64(profile), 10)
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionHeartbeat represents extension "heartbeat".
