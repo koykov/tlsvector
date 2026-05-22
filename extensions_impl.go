@@ -1011,6 +1011,12 @@ func (e *ExtensionHeartbeat) AppendDescription(dst []byte, pad string) []byte {
 	return dst
 }
 
+func (e *ExtensionHeartbeat) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"mode":`...)
+	dst = strconv.AppendInt(dst, int64(e.Mode()), 10)
+	return dst
+}
+
 // ---
 
 // ExtensionApplicationLayerProtocolNegotiation represents extension "application_layer_protocol_negotiation".
