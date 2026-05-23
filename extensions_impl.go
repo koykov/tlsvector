@@ -1209,6 +1209,22 @@ func (e *ExtensionSignedCertificateTimestamp) AppendDescription(dst []byte, pad 
 	return dst
 }
 
+func (e *ExtensionSignedCertificateTimestamp) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(timestamp []byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, '"')
+		dst = append(dst, timestamp...)
+		dst = append(dst, '"')
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionClientCertificateType represents extension "client_certificate_type".
