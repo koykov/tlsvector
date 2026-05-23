@@ -1323,6 +1323,24 @@ func (e *ExtensionServerCertificateType) AppendDescription(dst []byte, pad strin
 	return dst
 }
 
+func (e *ExtensionServerCertificateType) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(certType ClientCertificateType) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"name":"`...)
+		dst = append(dst, certType.String()...)
+		dst = append(dst, `","value":`...)
+		dst = append(dst, certType.Raw())
+		dst = append(dst, '}')
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionPadding represents extension "padding".
