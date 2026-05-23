@@ -1369,6 +1369,12 @@ func (e *ExtensionPadding) AppendDescription(dst []byte, pad string) []byte {
 	return dst
 }
 
+func (e *ExtensionPadding) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"length":`...)
+	dst = strconv.AppendInt(dst, int64(e.Length()), 10)
+	return dst
+}
+
 // ---
 
 // ExtensionEncryptThenMAC represents extension "encrypt_then_mac".
