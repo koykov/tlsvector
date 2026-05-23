@@ -1141,6 +1141,24 @@ func (e *ExtensionStatusRequestV2) AppendDescription(dst []byte, pad string) []b
 	return dst
 }
 
+func (e *ExtensionStatusRequestV2) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(statusType byte, requestData []byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"type":`...)
+		dst = append(dst, statusType)
+		dst = append(dst, `,"data":"`...)
+		dst = append(dst, requestData...)
+		dst = append(dst, `"}`...)
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionSignedCertificateTimestamp represents extension "signed_certificate_timestamp".
