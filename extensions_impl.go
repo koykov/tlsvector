@@ -1604,6 +1604,24 @@ func (e *ExtensionTLSLTS) AppendDescription(dst []byte, pad string) []byte {
 	return dst
 }
 
+func (e *ExtensionTLSLTS) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"length":`...)
+	dst = strconv.AppendInt(dst, int64(len(e.payload)), 10)
+	dst = append(dst, `,"items":[`...)
+	var c int
+	e.Each(func(data []byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, '"')
+		dst = append(dst, data...)
+		dst = append(dst, '"')
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionCompressCertificate represents extension "compress_certificate".
