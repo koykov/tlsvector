@@ -1702,6 +1702,12 @@ func (e *ExtensionRecordSizeLimit) AppendDescription(dst []byte, pad string) []b
 	return dst
 }
 
+func (e *ExtensionRecordSizeLimit) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"value":`...)
+	dst = strconv.AppendInt(dst, int64(e.Limit()), 10)
+	return dst
+}
+
 // ---
 
 // ExtensionPWDProtect represents extension "pwd_protect".
