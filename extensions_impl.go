@@ -1391,6 +1391,10 @@ func (e *ExtensionEncryptThenMAC) AppendDescription(dst []byte, pad string) []by
 	return dst
 }
 
+func (e *ExtensionEncryptThenMAC) AppendJSON(dst []byte) []byte {
+	return dst
+}
+
 // ---
 
 // ExtensionExtendedMainSecret represents extension "extended_main_secret".
@@ -1404,6 +1408,10 @@ func NewExtensionExtendedMainSecret(payload []byte) *ExtensionExtendedMainSecret
 
 func (e *ExtensionExtendedMainSecret) AppendDescription(dst []byte, pad string) []byte {
 	_ = pad
+	return dst
+}
+
+func (e *ExtensionExtendedMainSecret) AppendJSON(dst []byte) []byte {
 	return dst
 }
 
@@ -1456,6 +1464,22 @@ func (e *ExtensionTokenBinding) AppendDescription(dst []byte, pad string) []byte
 		dst = strconv.AppendInt(dst, int64(keyParams), 10)
 		dst = append(dst, '\n')
 	})
+	return dst
+}
+
+func (e *ExtensionTokenBinding) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"version":`...)
+	dst = strconv.AppendInt(dst, int64(e.Version()), 10)
+	dst = append(dst, `,"items":[`...)
+	var c int
+	e.Each(func(keyParams byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = strconv.AppendInt(dst, int64(keyParams), 10)
+		c++
+	})
+	dst = append(dst, ']')
 	return dst
 }
 
