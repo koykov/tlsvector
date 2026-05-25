@@ -1663,6 +1663,20 @@ func (e *ExtensionCompressCertificate) AppendDescription(dst []byte, pad string)
 	return dst
 }
 
+func (e *ExtensionCompressCertificate) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(algorithm uint16) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = strconv.AppendInt(dst, int64(algorithm), 10)
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionRecordSizeLimit represents extension "record_size_limit".
