@@ -1,6 +1,7 @@
 package tlsvector
 
 import (
+	"encoding/hex"
 	"fmt"
 	"strconv"
 )
@@ -2020,6 +2021,13 @@ func (e *ExtensionTLMSP) AppendDescription(dst []byte, pad string) []byte {
 	dst = append(dst, pad...)
 	dst = fmt.Appendf(dst, "%X", e.payload)
 	dst = append(dst, '\n')
+	return dst
+}
+
+func (e *ExtensionTLMSP) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"hex":"`...)
+	dst = hex.AppendEncode(dst, e.payload)
+	dst = append(dst, '"')
 	return dst
 }
 
