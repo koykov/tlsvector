@@ -1730,6 +1730,12 @@ func (e *ExtensionPWDProtect) AppendDescription(dst []byte, pad string) []byte {
 	return dst
 }
 
+func (e *ExtensionPWDProtect) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"length":`...)
+	dst = strconv.AppendInt(dst, int64(e.Length()), 10)
+	return dst
+}
+
 // ---
 
 // ExtensionPWDClear represents extension "pwd_clear".
@@ -1749,6 +1755,12 @@ func (e *ExtensionPWDClear) AppendDescription(dst []byte, pad string) []byte {
 	dst = append(dst, pad...)
 	dst = strconv.AppendInt(dst, int64(e.Length()), 10)
 	dst = append(dst, '\n')
+	return dst
+}
+
+func (e *ExtensionPWDClear) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"length":`...)
+	dst = strconv.AppendInt(dst, int64(e.Length()), 10)
 	return dst
 }
 
