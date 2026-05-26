@@ -2575,6 +2575,10 @@ func (e *ExtensionPostHandshakeAuth) AppendDescription(dst []byte, pad string) [
 	return dst
 }
 
+func (e *ExtensionPostHandshakeAuth) AppendJSON(dst []byte) []byte {
+	return dst
+}
+
 // ---
 
 func NewExtensionSignatureAlgorithmsCert(payload []byte) *ExtensionSignatureAlgorithmsCert {
@@ -2614,6 +2618,24 @@ func (e *ExtensionSignatureAlgorithmsCert) AppendDescription(dst []byte, pad str
 		dst = strconv.AppendInt(dst, int64(signature), 10)
 		dst = append(dst, '\n')
 	})
+	return dst
+}
+
+func (e *ExtensionSignatureAlgorithmsCert) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(hash, signature byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"hash":`...)
+		dst = strconv.AppendInt(dst, int64(hash), 10)
+		dst = append(dst, `,"signature":`...)
+		dst = strconv.AppendInt(dst, int64(signature), 10)
+		dst = append(dst, '}')
+		c++
+	})
+	dst = append(dst, ']')
 	return dst
 }
 
