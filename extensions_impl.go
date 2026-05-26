@@ -2082,6 +2082,13 @@ func (e *ExtensionTLMSPDelegate) AppendDescription(dst []byte, pad string) []byt
 	return dst
 }
 
+func (e *ExtensionTLMSPDelegate) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"hex":"`...)
+	dst = hex.AppendEncode(dst, e.payload)
+	dst = append(dst, '"')
+	return dst
+}
+
 // ---
 
 // ExtensionSupportedEKTCiphers represents extension "supported_ekt_ciphers".
