@@ -1786,6 +1786,12 @@ func (e *ExtensionPasswordSalt) AppendDescription(dst []byte, pad string) []byte
 	return dst
 }
 
+func (e *ExtensionPasswordSalt) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"length":`...)
+	dst = strconv.AppendInt(dst, int64(e.Length()), 10)
+	return dst
+}
+
 // ---
 
 // ExtensionTicketPinning represents extension "ticket_pinning".
