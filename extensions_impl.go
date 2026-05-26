@@ -2133,6 +2133,20 @@ func (e *ExtensionSupportedEKTCiphers) AppendDescription(dst []byte, pad string)
 	return dst
 }
 
+func (e *ExtensionSupportedEKTCiphers) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(cipher uint16) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = strconv.AppendUint(dst, uint64(cipher), 10)
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionPreSharedKey represents extension "pre_shared_key".
