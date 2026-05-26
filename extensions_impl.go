@@ -2053,6 +2053,13 @@ func (e *ExtensionTLMSPProxying) AppendDescription(dst []byte, pad string) []byt
 	return dst
 }
 
+func (e *ExtensionTLMSPProxying) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"hex":"`...)
+	dst = hex.AppendEncode(dst, e.payload)
+	dst = append(dst, '"')
+	return dst
+}
+
 // ---
 
 // ExtensionTLMSPDelegate represents extension "TLMSP_delegate".
