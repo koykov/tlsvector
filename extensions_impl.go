@@ -2536,6 +2536,24 @@ func (e *ExtensionOIDFilters) AppendDescription(dst []byte, pad string) []byte {
 	return dst
 }
 
+func (e *ExtensionOIDFilters) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(oid []byte, filter []byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"oid":"`...)
+		dst = append(dst, oid...)
+		dst = append(dst, `","filter":"`...)
+		dst = append(dst, filter...)
+		dst = append(dst, `"}`...)
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionPostHandshakeAuth represents extension "post_handshake_auth".
