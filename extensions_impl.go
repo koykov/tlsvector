@@ -2457,6 +2457,22 @@ func (e *ExtensionCertificateAuthorities) AppendDescription(dst []byte, pad stri
 	return dst
 }
 
+func (e *ExtensionCertificateAuthorities) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(ca []byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, '"')
+		dst = append(dst, ca...)
+		dst = append(dst, '"')
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionOIDFilters represents extension "oid_filters".
