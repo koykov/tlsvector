@@ -1855,6 +1855,24 @@ func (e *ExtensionTicketPinning) AppendDescription(dst []byte, pad string) []byt
 	return dst
 }
 
+func (e *ExtensionTicketPinning) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(pinKey []byte, pin []byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"pin_key":"`...)
+		dst = append(dst, pinKey...)
+		dst = append(dst, `","pin":"`...)
+		dst = append(dst, pin...)
+		dst = append(dst, `"}`...)
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionTLSCertWithExternPSK represents extension "tls_cert_with_extern_psk".
