@@ -2306,6 +2306,24 @@ func (e *ExtensionSupportedVersions) AppendDescription(dst []byte, pad string) [
 	return dst
 }
 
+func (e *ExtensionSupportedVersions) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(version MessageVersion) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"version":"`...)
+		dst = append(dst, version.String()...)
+		dst = append(dst, `","value":`...)
+		dst = strconv.AppendUint(dst, uint64(version.Raw()), 10)
+		dst = append(dst, '}')
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionCookie represents extension "cookie".
