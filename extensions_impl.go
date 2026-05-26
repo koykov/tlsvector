@@ -2346,6 +2346,13 @@ func (e *ExtensionCookie) AppendDescription(dst []byte, pad string) []byte {
 	return dst
 }
 
+func (e *ExtensionCookie) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"cookie":"`...)
+	dst = append(dst, e.Cookie()...)
+	dst = append(dst, '"')
+	return dst
+}
+
 // ---
 
 // ExtensionPSKKeyExchangeModes represents extension "psk_key_exchange_modes".
