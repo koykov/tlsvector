@@ -2212,6 +2212,24 @@ func (e *ExtensionPreSharedKey) AppendDescription(dst []byte, pad string) []byte
 	return dst
 }
 
+func (e *ExtensionPreSharedKey) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(identity []byte, obfuscatedTicketAge uint32) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"identity":"`...)
+		dst = append(dst, identity...)
+		dst = append(dst, `","obfuscated_ticket_age":`...)
+		dst = strconv.AppendUint(dst, uint64(obfuscatedTicketAge), 10)
+		dst = append(dst, '}')
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionEarlyData represents extension "early_data".
