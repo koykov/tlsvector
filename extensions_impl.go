@@ -2256,6 +2256,12 @@ func (e *ExtensionEarlyData) AppendDescription(dst []byte, pad string) []byte {
 	return dst
 }
 
+func (e *ExtensionEarlyData) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"max_early_data_size":`...)
+	dst = strconv.AppendUint(dst, uint64(e.MaxEarlyDataSize()), 10)
+	return dst
+}
+
 // ---
 
 // ExtensionSupportedVersions represents extension "supported_versions".
