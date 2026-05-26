@@ -2393,6 +2393,20 @@ func (e *ExtensionPSKKeyExchangeModes) AppendDescription(dst []byte, pad string)
 	return dst
 }
 
+func (e *ExtensionPSKKeyExchangeModes) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(mode byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = fmt.Appendf(dst, "0x%02x", mode)
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionCertificateAuthorities represents extension "certificate_authorities".
