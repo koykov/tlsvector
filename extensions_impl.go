@@ -1995,6 +1995,12 @@ func (e *ExtensionSessionTicket) AppendDescription(dst []byte, pad string) []byt
 	return dst
 }
 
+func (e *ExtensionSessionTicket) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"length":`...)
+	dst = strconv.AppendInt(dst, int64(len(e.Ticket())), 10)
+	return dst
+}
+
 // ---
 
 // ExtensionTLMSP represents extension "TLMSP".
