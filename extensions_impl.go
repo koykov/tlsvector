@@ -1594,7 +1594,7 @@ func (e *ExtensionTLSLTS) Each(fn func(data []byte)) {
 	}
 }
 
-func (e *ExtensionTLSLTS) AppendDescription(dst []byte, pad string) []byte {
+func (e *ExtensionTLSLTS) AppendDescription(dst []byte, _ string) []byte {
 	dst = append(dst, "tls_lts ["...)
 	dst = strconv.AppendInt(dst, int64(len(e.payload)), 10)
 	dst = append(dst, " bytes] "...)
@@ -2730,7 +2730,7 @@ func (e *ExtensionTransparencyInfo) Length() int {
 	return len(e.payload)
 }
 
-func (e *ExtensionTransparencyInfo) AppendDescription(dst []byte, pad string) []byte {
+func (e *ExtensionTransparencyInfo) AppendDescription(dst []byte, _ string) []byte {
 	dst = fmt.Appendf(dst, "%X", e.payload)
 	dst = append(dst, '\n')
 	return dst
@@ -2855,6 +2855,13 @@ func (e *ExtensionQUICTransportParameters) AppendDescription(dst []byte, pad str
 	return dst
 }
 
+func (e *ExtensionQUICTransportParameters) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"parameters":"`...)
+	dst = append(dst, e.Parameters()...)
+	dst = append(dst, '"')
+	return dst
+}
+
 // ---
 
 // ExtensionTicketRequest represents extension "ticket_request".
@@ -2868,6 +2875,10 @@ func NewExtensionTicketRequest(payload []byte) *ExtensionTicketRequest {
 
 func (e *ExtensionTicketRequest) AppendDescription(dst []byte, pad string) []byte {
 	_ = pad
+	return dst
+}
+
+func (e *ExtensionTicketRequest) AppendJSON(dst []byte) []byte {
 	return dst
 }
 
