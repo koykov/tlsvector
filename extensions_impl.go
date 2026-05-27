@@ -3022,6 +3022,10 @@ func (e *ExtensionRRC) AppendDescription(dst []byte, pad string) []byte {
 	return dst
 }
 
+func (e *ExtensionRRC) AppendJSON(dst []byte) []byte {
+	return dst
+}
+
 // ---
 
 // ExtensionTLSFlags represents extension "tls_flags".
@@ -3060,6 +3064,20 @@ func (e *ExtensionTLSFlags) AppendDescription(dst []byte, pad string) []byte {
 		dst = fmt.Appendf(dst, "0x%08x", flag)
 		dst = append(dst, '\n')
 	})
+	return dst
+}
+
+func (e *ExtensionTLSFlags) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(flag uint32) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = strconv.AppendUint(dst, uint64(flag), 64)
+		c++
+	})
+	dst = append(dst, ']')
 	return dst
 }
 
@@ -3104,6 +3122,20 @@ func (e *ExtensionECHOuterExtensions) AppendDescription(dst []byte, pad string) 
 		dst = fmt.Appendf(dst, "0x%04x", extType)
 		dst = append(dst, '\n')
 	})
+	return dst
+}
+
+func (e *ExtensionECHOuterExtensions) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(extType uint16) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = strconv.AppendUint(dst, uint64(extType), 64)
+		c++
+	})
+	dst = append(dst, ']')
 	return dst
 }
 
