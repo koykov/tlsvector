@@ -2932,6 +2932,22 @@ func (e *ExtensionDNSSECChain) AppendDescription(dst []byte, pad string) []byte 
 	return dst
 }
 
+func (e *ExtensionDNSSECChain) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(chainData []byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, '"')
+		dst = append(dst, chainData...)
+		dst = append(dst, '"')
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionSequenceNumberEncryptionAlgorithms represents extension "sequence_number_encryption_algorithms".
