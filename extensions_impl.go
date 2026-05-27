@@ -2992,6 +2992,20 @@ func (e *ExtensionSequenceNumberEncryptionAlgorithms) AppendDescription(dst []by
 	return dst
 }
 
+func (e *ExtensionSequenceNumberEncryptionAlgorithms) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(algo uint16) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = fmt.Appendf(dst, "0x%04x", algo)
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionRRC represents extension "rrc".
