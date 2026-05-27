@@ -2697,6 +2697,24 @@ func (e *ExtensionKeyShare) AppendDescription(dst []byte, pad string) []byte {
 	return dst
 }
 
+func (e *ExtensionKeyShare) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"items":[`...)
+	var c int
+	e.Each(func(group uint16, keyExchange []byte) {
+		if c > 0 {
+			dst = append(dst, ',')
+		}
+		dst = append(dst, `{"group":`...)
+		dst = strconv.AppendUint(dst, uint64(group), 10)
+		dst = append(dst, `,"key_exchange":"`...)
+		dst = fmt.Appendf(dst, "%X", keyExchange)
+		dst = append(dst, `"}`...)
+		c++
+	})
+	dst = append(dst, ']')
+	return dst
+}
+
 // ---
 
 // ExtensionTransparencyInfo represents extension "transparency_info".
