@@ -2796,6 +2796,13 @@ func (e *ExtensionExternalIDHash) AppendDescription(dst []byte, pad string) []by
 	return dst
 }
 
+func (e *ExtensionExternalIDHash) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"hash":"`...)
+	dst = append(dst, e.Hash()...)
+	dst = append(dst, '"')
+	return dst
+}
+
 // ---
 
 // ExtensionExternalSessionID represents extension "external_session_id".
@@ -2816,6 +2823,13 @@ func (e *ExtensionExternalSessionID) AppendDescription(dst []byte, pad string) [
 	dst = append(dst, "id="...)
 	dst = append(dst, e.ID()...)
 	dst = append(dst, '\n')
+	return dst
+}
+
+func (e *ExtensionExternalSessionID) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"id":"`...)
+	dst = append(dst, e.ID()...)
+	dst = append(dst, '"')
 	return dst
 }
 
