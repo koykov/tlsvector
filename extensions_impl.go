@@ -2736,6 +2736,13 @@ func (e *ExtensionTransparencyInfo) AppendDescription(dst []byte, pad string) []
 	return dst
 }
 
+func (e *ExtensionTransparencyInfo) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"hex":"`...)
+	dst = hex.AppendEncode(dst, e.payload)
+	dst = append(dst, '"')
+	return dst
+}
+
 // ---
 
 // ExtensionConnectionID represents extension "connection_id".
@@ -2756,6 +2763,13 @@ func (e *ExtensionConnectionID) AppendDescription(dst []byte, pad string) []byte
 	dst = append(dst, "cid="...)
 	dst = append(dst, e.CID()...)
 	dst = append(dst, '\n')
+	return dst
+}
+
+func (e *ExtensionConnectionID) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"cid":"`...)
+	dst = append(dst, e.CID()...)
+	dst = append(dst, '"')
 	return dst
 }
 
