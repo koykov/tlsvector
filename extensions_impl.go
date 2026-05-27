@@ -3157,7 +3157,7 @@ func (e *ExtensionEncryptedClientHello) ConfigIDLength() int {
 	return int(e.payload[0])<<8 | int(e.payload[1])
 }
 
-func (e *ExtensionEncryptedClientHello) Each(fn func(cipherSuite uint16, keyExchange []byte, encryptedExtensions []byte)) {
+func (e *ExtensionEncryptedClientHello) Each(_ func(cipherSuite uint16, keyExchange []byte, encryptedExtensions []byte)) {
 	// todo implement me
 }
 
@@ -3166,6 +3166,12 @@ func (e *ExtensionEncryptedClientHello) AppendDescription(dst []byte, pad string
 	dst = append(dst, "config_id_len="...)
 	dst = strconv.AppendInt(dst, int64(e.ConfigIDLength()), 10)
 	dst = append(dst, '\n')
+	return dst
+}
+
+func (e *ExtensionEncryptedClientHello) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"config_id_len":`...)
+	dst = strconv.AppendInt(dst, int64(e.ConfigIDLength()), 10)
 	return dst
 }
 
@@ -3189,5 +3195,12 @@ func (e *ExtensionRenegotiationInfo) AppendDescription(dst []byte, pad string) [
 	dst = append(dst, "verified_data="...)
 	dst = fmt.Appendf(dst, "%X", e.payload)
 	dst = append(dst, '\n')
+	return dst
+}
+
+func (e *ExtensionRenegotiationInfo) AppendJSON(dst []byte) []byte {
+	dst = append(dst, `"verified_data":"`...)
+	dst = hex.AppendEncode(dst, e.VerifiedData())
+	dst = append(dst, '"')
 	return dst
 }

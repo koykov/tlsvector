@@ -21,6 +21,7 @@ func (et ExtensionType) String() string {
 
 type ExtensionDescriptor interface {
 	AppendDescription(dst []byte, pad string) []byte
+	AppendJSON(dst []byte) []byte
 }
 
 type Extension struct {
