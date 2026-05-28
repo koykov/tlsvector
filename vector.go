@@ -6,6 +6,7 @@ import (
 	"hash"
 	"io"
 	"strconv"
+	"strings"
 
 	"github.com/koykov/byteconv"
 )
@@ -253,7 +254,22 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 			if len(name) == 0 {
 				name = "unknown"
 			}
-			dst = append(dst, name...)
+			pos := strings.IndexByte(name, '"')
+			if pos == -1 {
+				dst = append(dst, name...)
+			} else {
+				for {
+					dst = append(dst, name[:pos]...)
+					dst = append(dst, '\\')
+					dst = append(dst, '"')
+					name = name[pos+1:]
+					pos = strings.IndexByte(name, '"')
+					if pos == -1 {
+						dst = append(dst, name...)
+						break
+					}
+				}
+			}
 			dst = append(dst, `","type":`...)
 			dst = strconv.AppendUint(dst, uint64(e.Type.Raw()), 10)
 			dst = append(dst, `,`...)
