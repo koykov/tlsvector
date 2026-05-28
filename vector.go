@@ -239,7 +239,7 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 	}
 
 	if len(vec.ext) > 0 {
-		dst = append(dst, `"extensions":[`...)
+		dst = append(dst, `,"extensions":[`...)
 		for i := 0; i < len(vec.ext); i++ {
 			if i > 0 {
 				dst = append(dst, ',')
@@ -257,7 +257,9 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 			dst = append(dst, `","type":`...)
 			dst = strconv.AppendUint(dst, uint64(e.Type.Raw()), 10)
 			dst = append(dst, `,`...)
-			// dst = e.AppendDescription(dst, "\t\t\t") // todo append json
+			dst = append(dst, `"payload":{`...)
+			dst = e.AppendJSON(dst)
+			dst = append(dst, '}')
 			dst = append(dst, '}')
 		}
 		dst = append(dst, ']')

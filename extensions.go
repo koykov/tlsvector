@@ -42,6 +42,17 @@ func (e *Extension) AppendDescription(dst []byte, pad string) []byte {
 	return descr.AppendDescription(dst, pad)
 }
 
+func (e *Extension) AppendJSON(dst []byte) []byte {
+	descrFn, ok := __ext_descr[e.Type]
+	if !ok {
+		return dst
+	}
+	e.Data.Bytes()
+	descr := descrFn(e.Data.Bytes())
+	dst = descr.AppendJSON(dst)
+	return dst
+}
+
 func (vec *vector) parseExtensions(off uint32) (_ uint32, err error) {
 	var raw []byte
 	if raw, off, err = vec.cut(off, 2); err != nil {
