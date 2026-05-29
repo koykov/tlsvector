@@ -129,7 +129,9 @@ func (vec *vector) Version() Version {
 				mx = version
 			}
 		})
-		return mx
+		if mx.Raw() > 0 {
+			return mx
+		}
 	}
 	// Fallback to message version.
 	return vec.mver
