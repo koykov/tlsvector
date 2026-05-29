@@ -18,6 +18,7 @@ type stage struct {
 	origin   []byte
 	flows    [][]byte
 	chfmt    []byte
+	chjson   []byte
 	shfmt    []byte
 	ja3, ja4 []byte
 }
@@ -81,6 +82,7 @@ func init() {
 			}
 
 			st.chfmt, _ = os.ReadFile(fmt.Sprintf("%s%sclient_hello.fmt.txt", path, ps))
+			st.chjson, _ = os.ReadFile(fmt.Sprintf("%s%sclient_hello.json", path, ps))
 			st.shfmt, _ = os.ReadFile(fmt.Sprintf("%s%sserver_hello.fmt.txt", path, ps))
 			st.ja3, _ = os.ReadFile(fmt.Sprintf("%s%sclient_hello.ja3.txt", path, ps))
 			st.ja4, _ = os.ReadFile(fmt.Sprintf("%s%sclient_hello.ja4.txt", path, ps))
