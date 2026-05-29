@@ -2204,7 +2204,7 @@ func (e *ExtensionPreSharedKey) AppendDescription(dst []byte, pad string) []byte
 	e.Each(func(identity []byte, obfuscatedTicketAge uint32) {
 		dst = append(dst, pad...)
 		dst = append(dst, "id="...)
-		dst = append(dst, identity...)
+		dst = hex.AppendEncode(dst, identity)
 		dst = append(dst, " age="...)
 		dst = strconv.AppendInt(dst, int64(obfuscatedTicketAge), 10)
 		dst = append(dst, '\n')
@@ -2220,7 +2220,7 @@ func (e *ExtensionPreSharedKey) AppendJSON(dst []byte) []byte {
 			dst = append(dst, ',')
 		}
 		dst = append(dst, `{"identity":"`...)
-		dst = append(dst, identity...)
+		dst = hex.AppendEncode(dst, identity)
 		dst = append(dst, `","obfuscated_ticket_age":`...)
 		dst = strconv.AppendUint(dst, uint64(obfuscatedTicketAge), 10)
 		dst = append(dst, '}')
@@ -2400,7 +2400,7 @@ func (e *ExtensionPSKKeyExchangeModes) AppendJSON(dst []byte) []byte {
 		if c > 0 {
 			dst = append(dst, ',')
 		}
-		dst = fmt.Appendf(dst, "0x%02x", mode)
+		dst = strconv.AppendInt(dst, int64(mode), 10)
 		c++
 	})
 	dst = append(dst, ']')

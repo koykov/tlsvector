@@ -115,8 +115,9 @@ func (vec *vector) Extensions() []Extension {
 }
 
 func (vec *vector) String() string {
-	vec.buf = vec.AppendDescription(vec.buf[:0])
-	return byteconv.B2S(vec.buf)
+	buf := make([]byte, 0, 5*1024)
+	buf = vec.AppendDescription(buf[:0])
+	return byteconv.B2S(buf)
 }
 
 func (vec *vector) AppendDescription(dst []byte) []byte {
@@ -177,8 +178,9 @@ func (vec *vector) AppendDescription(dst []byte) []byte {
 }
 
 func (vec *vector) JSON() string {
-	vec.buf = vec.AppendJSON(vec.buf[:0])
-	return byteconv.B2S(vec.buf)
+	buf := make([]byte, 0, 5*1024)
+	buf = vec.AppendJSON(buf[:0])
+	return byteconv.B2S(buf)
 }
 
 func (vec *vector) AppendJSON(dst []byte) []byte {
