@@ -9,6 +9,6 @@ func (vec *vector) parseTLSVersion(off uint32) (_ uint32, err error) {
 	if raw, off, err = vec.cut(off, 2); err != nil {
 		return off, err
 	}
-	vec.mver = MessageVersion(binary.BigEndian.Uint16(raw))
+	vec.mver = Version(binary.BigEndian.Uint16(raw))
 	return off, err
 }

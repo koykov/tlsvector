@@ -57,7 +57,7 @@ func (vec *vector) ja4s() ([]byte, uint32, uint32) {
 			data := ext.Data.Bytes()[1:]
 			for j := 0; j < len(data); j += 2 {
 				if data[j] == 0x03 {
-					ver = MessageVersion(uint16(data[j])<<8 | uint16(data[j+1]))
+					ver = Version(uint16(data[j])<<8 | uint16(data[j+1]))
 					break
 				}
 			}

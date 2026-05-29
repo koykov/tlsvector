@@ -71,6 +71,10 @@ func (vec *vector) parseExtensions(off uint32) (_ uint32, err error) {
 		off += uint32(eln)
 		vec.ext = append(vec.ext, e)
 		i += eln
+
+		if e.Type.Raw() == 0x002B {
+			vec.svext = len(vec.ext) - 1
+		}
 	}
 
 	return off, nil

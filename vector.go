@@ -18,17 +18,18 @@ type Interface interface {
 	Reset()
 
 	RecordType() RecordType
-	RecordLegacyVersion() RecordVersion
+	RecordLegacyVersion() Version
 	RecordLength() uint16
 
 	MessageType() MessageType
 	MessageLength() uint32
-	LegacyVersion() MessageVersion
+	LegacyVersion() Version
 	Random() []byte
 	SessionID() []byte
 	CipherSuites() []CipherSuite
 	CompressionMethod() uint8
 	Extensions() []Extension
+	Version() Version
 
 	AppendDescription(dst []byte) []byte
 
@@ -46,20 +47,21 @@ type vector struct {
 	raw   []byte
 	buf   []byte
 	buf16 []uint16
+	svext int
 
-	rtyp RecordType    // record type (always handshake)
-	rver RecordVersion // record version (legacy)
-	rlen uint16        // record length (including handshake header)
+	rtyp RecordType // record type (always handshake)
+	rver Version    // record version (legacy)
+	rlen uint16     // record length (including handshake header)
 
-	mtyp MessageType    // message type
-	mlen uint32         // message length
-	mver MessageVersion // TLS version (legacy)
-	rand uint64         // client random
-	sid  uint64         // session ID
-	chps []CipherSuite  // cipher suites
-	cmpl uint8          // compression method
-	cmps uint8          // compression method
-	ext  []Extension    // extensions
+	mtyp MessageType   // message type
+	mlen uint32        // message length
+	mver Version       // TLS version (legacy)
+	rand uint64        // client random
+	sid  uint64        // session ID
+	chps []CipherSuite // cipher suites
+	cmpl uint8         // compression method
+	cmps uint8         // compression method
+	ext  []Extension   // extensions
 
 	ja3, ja4 hash.Hash
 }
@@ -72,7 +74,7 @@ func (vec *vector) RecordType() RecordType {
 	return vec.rtyp
 }
 
-func (vec *vector) RecordLegacyVersion() RecordVersion {
+func (vec *vector) RecordLegacyVersion() Version {
 	return vec.rver
 }
 
@@ -88,7 +90,7 @@ func (vec *vector) MessageLength() uint32 {
 	return vec.mlen
 }
 
-func (vec *vector) LegacyVersion() MessageVersion {
+func (vec *vector) LegacyVersion() Version {
 	return vec.mver
 }
 
@@ -114,6 +116,25 @@ func (vec *vector) Extensions() []Extension {
 	return vec.ext
 }
 
+func (vec *vector) Version() Version {
+	// Look for "supported_versions" extension first.
+	if vec.svext >= 0 && vec.svext < len(vec.ext) {
+		var mx Version
+		ext := NewExtensionSupportedVersions(vec.ext[vec.svext].Data.Bytes())
+		ext.Each(func(version Version) {
+			if isGREASE(version.Raw()) {
+				return
+			}
+			if version.Raw() > mx.Raw() {
+				mx = version
+			}
+		})
+		return mx
+	}
+	// Fallback to message version.
+	return vec.mver
+}
+
 func (vec *vector) String() string {
 	buf := make([]byte, 0, 5*1024)
 	buf = vec.AppendDescription(buf[:0])
@@ -131,6 +152,8 @@ func (vec *vector) AppendDescription(dst []byte) []byte {
 	dst = fmt.Appendf(dst, "\tType: %s (0x%02X)\n", vec.mtyp.String(), vec.mtyp.Raw())
 	dst = fmt.Appendf(dst, "\tLength: %d\n", vec.mlen)
 	dst = fmt.Appendf(dst, "\tLegacy version: %s (0x%04X)\n", vec.mver.String(), vec.mver.Raw())
+	ver := vec.Version()
+	dst = fmt.Appendf(dst, "\tVersion: %s (0x%04X)\n", ver.String(), ver.Raw())
 	dst = fmt.Appendf(dst, "\tRandom: %X\n", vec.Random())
 	sid := vec.SessionID()
 	dst = fmt.Appendf(dst, "\tSession ID Length: %d\n", len(sid))
@@ -291,6 +314,7 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 func (vec *vector) Reset() {
 	vec.raw = vec.raw[:0]
 	vec.resetBuf()
+	vec.svext = -1
 
 	vec.rtyp = RecordTypeUnknown
 	vec.rver = 0

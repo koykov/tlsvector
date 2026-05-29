@@ -23,56 +23,6 @@ func (mt MessageType) String() string {
 	return mtyps[mt]
 }
 
-type MessageVersion uint16
-
-func (mv MessageVersion) Raw() uint16 {
-	return uint16(mv)
-}
-
-func (mv MessageVersion) Lo() uint8 {
-	return uint8(mv >> 8)
-}
-
-func (mv MessageVersion) Hi() uint8 {
-	return uint8(mv)
-}
-
-func (mv MessageVersion) Short() string {
-	lo, hi := byte(mv), byte(mv>>8)
-	switch {
-	case hi == 3 && lo == 0:
-		return "30"
-	case hi == 3 && lo == 1:
-		return "10"
-	case hi == 3 && lo == 2:
-		return "11"
-	case hi == 3 && lo == 3:
-		return "12"
-	case hi == 3 && lo == 4:
-		return "13"
-	default:
-		return "00"
-	}
-}
-
-func (mv MessageVersion) String() string {
-	lo, hi := byte(mv), byte(mv>>8)
-	switch {
-	case hi == 3 && lo == 0:
-		return "SSL3.0"
-	case hi == 3 && lo == 1:
-		return "TLS1.0"
-	case hi == 3 && lo == 2:
-		return "TLS1.1"
-	case hi == 3 && lo == 3:
-		return "TLS1.2"
-	case hi == 3 && lo == 4:
-		return "TLS1.3"
-	default:
-		return "UNK"
-	}
-}
-
 func (vec *vector) parseHandshakeHeader(off uint32) (_ uint32, err error) {
 	var raw []byte
 	if raw, off, err = vec.cut(off, 4); err != nil {
