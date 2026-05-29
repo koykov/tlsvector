@@ -67,7 +67,7 @@ func (e *ExtensionServerName) AppendJSON(dst []byte) []byte {
 		}
 		dst = append(dst, `{"type":`...)
 		dst = strconv.AppendInt(dst, int64(nameType), 10)
-		dst = append(dst, `","name":"`...)
+		dst = append(dst, `,"name":"`...)
 		dst = append(dst, name...)
 		dst = append(dst, `"}`...)
 		c++
