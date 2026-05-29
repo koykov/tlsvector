@@ -5,7 +5,7 @@ Record:
 Handshake:
 	Type: SERVER_HELLO (0x02)
 	Length: 55
-	Legacy version: TLS1.0 (0x0301)
+	Version: TLS1.0 (0x0301)
 	Random: 000000000000000000000000000000000000000000000000444F574E47524400
 	Session ID Length: 0
 	Session ID: N/D
