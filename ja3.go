@@ -8,7 +8,44 @@ import (
 	"github.com/koykov/byteconv"
 )
 
-func (vec *vector) ja3s() []byte {
+func (vec *vector) JA3String() string {
+	switch vec.mtyp {
+	case MessageTypeClientHello:
+		return byteconv.B2S(vec.ja3c())
+	case MessageTypeServerHello:
+		return byteconv.B2S(vec.ja3s())
+	}
+	return ""
+}
+
+func (vec *vector) JA3() string {
+	var bin []byte
+	switch vec.mtyp {
+	case MessageTypeClientHello:
+		bin = vec.ja3c()
+	case MessageTypeServerHello:
+		bin = vec.ja3s()
+	default:
+		return ""
+	}
+
+	if vec.ja3 == nil {
+		vec.ja3 = md5.New()
+	}
+	vec.ja3.Reset()
+	vec.ja3.Write(bin)
+	off := len(vec.buf)
+	vec.buf = append(vec.buf, "0000000000000000"...)
+	h := vec.ja3.Sum(vec.buf[off:off])
+
+	off = len(vec.buf)
+	vec.buf = append(vec.buf, "00000000000000000000000000000000"...)
+	hex.Encode(vec.buf[off:off+32], h)
+
+	return byteconv.B2S(vec.buf[off:])
+}
+
+func (vec *vector) ja3c() []byte {
 	off := len(vec.buf)
 	vec.buf = strconv.AppendUint(vec.buf, uint64(vec.mver.Raw()), 10)
 	vec.buf = append(vec.buf, ',')
@@ -89,26 +126,9 @@ func (vec *vector) ja3s() []byte {
 	return bin
 }
 
-func (vec *vector) JA3String() string {
-	return byteconv.B2S(vec.ja3s())
-}
-
-func (vec *vector) JA3() string {
-	bin := vec.ja3s()
-	if vec.ja3 == nil {
-		vec.ja3 = md5.New()
-	}
-	vec.ja3.Reset()
-	vec.ja3.Write(bin)
-	off := len(vec.buf)
-	vec.buf = append(vec.buf, "0000000000000000"...)
-	h := vec.ja3.Sum(vec.buf[off:off])
-
-	off = len(vec.buf)
-	vec.buf = append(vec.buf, "00000000000000000000000000000000"...)
-	hex.Encode(vec.buf[off:off+32], h)
-
-	return byteconv.B2S(vec.buf[off:])
+func (vec *vector) ja3s() []byte {
+	// todo implement me
+	return nil
 }
 
 // Check value is a GREASE (Generate Random Extensions And Sustain Extensibility) value.
