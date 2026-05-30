@@ -127,8 +127,44 @@ func (vec *vector) ja3c() []byte {
 }
 
 func (vec *vector) ja3s() []byte {
-	// todo implement me
-	return nil
+	off := len(vec.buf)
+	vec.buf = strconv.AppendUint(vec.buf, uint64(vec.mver.Raw()), 10)
+	vec.buf = append(vec.buf, ',')
+
+	if len(vec.chps) > 0 {
+		var c int
+		for i := 0; i < len(vec.chps); i++ {
+			cs := vec.chps[i]
+			if isGREASE(cs.Raw()) {
+				continue
+			}
+			if c > 0 {
+				vec.buf = append(vec.buf, '-')
+			}
+			vec.buf = strconv.AppendUint(vec.buf, uint64(cs.Raw()), 10)
+			c++
+		}
+		vec.buf = append(vec.buf, ',')
+	}
+
+	if len(vec.ext) > 0 {
+		var c int
+		for i := 0; i < len(vec.ext); i++ {
+			ext := vec.ext[i]
+			if isGREASE(ext.Type.Raw()) {
+				continue
+			}
+			if c > 0 {
+				vec.buf = append(vec.buf, '-')
+			}
+			vec.buf = strconv.AppendUint(vec.buf, uint64(ext.Type.Raw()), 10)
+			c++
+		}
+		vec.buf = append(vec.buf, ',')
+	}
+
+	bin := vec.buf[off : len(vec.buf)-1]
+	return bin
 }
 
 // Check value is a GREASE (Generate Random Extensions And Sustain Extensibility) value.
