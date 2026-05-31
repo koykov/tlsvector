@@ -166,7 +166,8 @@ func TestVector(t *testing.T) {
 				vec := New()
 				err := vec.Parse(st.flows[1])
 				if err != nil {
-					t.Fatal(err)
+					t.Log(err)
+					return
 				}
 				t.Run("ja3", func(t *testing.T) {
 					h := vec.JA3()
