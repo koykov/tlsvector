@@ -162,6 +162,25 @@ func TestVector(t *testing.T) {
 					}
 				})
 			})
+			t.Run("server hello", func(t *testing.T) {
+				vec := New()
+				err := vec.Parse(st.flows[1])
+				if err != nil {
+					t.Fatal(err)
+				}
+				t.Run("ja3", func(t *testing.T) {
+					h := vec.JA3()
+					if !bytes.Equal(st.ja3s, []byte(h)) {
+						t.Errorf("ja3s mismatch: got '%s', expect '%s'", h, string(st.ja3s))
+					}
+				})
+				// t.Run("ja4", func(t *testing.T) {
+				// 	h := vec.JA4()
+				// 	if !bytes.Equal(st.ja4, []byte(h)) {
+				// 		t.Errorf("ja4 mismatch: got '%s', expect '%s'", h, string(st.ja4))
+				// 	}
+				// })
+			})
 		})
 	}
 }
