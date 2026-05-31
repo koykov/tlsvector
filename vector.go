@@ -36,11 +36,15 @@ type Interface interface {
 	JSON() string
 	AppendJSON(dst []byte) []byte
 
-	JA3() string
-	JA3String() string
+	JA3() []byte
+	AppendJA3(dst []byte) []byte
+	JA3String() []byte
+	AppendJA3String(dst []byte) []byte
 
-	JA4() string
-	JA4String() string
+	JA4() []byte
+	AppendJA4(dst []byte) []byte
+	JA4String() []byte
+	AppendJA4String(dst []byte) []byte
 }
 
 type vector struct {

@@ -128,16 +128,16 @@ func TestVector(t *testing.T) {
 				t.Error(err)
 				return
 			}
-			if vec.JA3String() != "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,5-23-11-13-18-65037-51-10-45-65281-0-43-35-27-16-17613,4588-29-23-24,0" {
+			if string(vec.JA3String()) != "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,5-23-11-13-18-65037-51-10-45-65281-0-43-35-27-16-17613,4588-29-23-24,0" {
 				t.Fail()
 			}
-			if vec.JA3() != "d68b9314066c879bf188950f16935411" {
+			if string(vec.JA3()) != "d68b9314066c879bf188950f16935411" {
 				t.Fail()
 			}
-			if vec.JA4String() != "t13d1516h2_002f,0035,009c,009d,1301,1302,1303,c013,c014,c02b,c02c,c02f,c030,cca8,cca9_0005,000a,000b,000d,0012,0017,001b,0023,002b,002d,0033,44cd,fe0d,ff01_0403,0804,0401,0503,0805,0501,0806,0601" {
+			if string(vec.JA4String()) != "t13d1516h2_002f,0035,009c,009d,1301,1302,1303,c013,c014,c02b,c02c,c02f,c030,cca8,cca9_0005,000a,000b,000d,0012,0017,001b,0023,002b,002d,0033,44cd,fe0d,ff01_0403,0804,0401,0503,0805,0501,0806,0601" {
 				t.Fail()
 			}
-			if vec.JA4() != "t13d1516h2_8daaf6152771_d8a2da3f94cd" {
+			if string(vec.JA4()) != "t13d1516h2_8daaf6152771_d8a2da3f94cd" {
 				t.Fail()
 			}
 		})
@@ -311,16 +311,16 @@ func TestVector(t *testing.T) {
 				t.Error(err)
 				return
 			}
-			if vec.JA3String() != "771,4865,51-43" {
+			if string(vec.JA3String()) != "771,4865,51-43" {
 				t.Fail()
 			}
-			if vec.JA3() != "eb1d94daa7e0344597e756a1fb6e7054" {
+			if string(vec.JA3()) != "eb1d94daa7e0344597e756a1fb6e7054" {
 				t.Fail()
 			}
-			if vec.JA4String() != "t130200_1301_234ea6891581" {
+			if string(vec.JA4String()) != "t130200_1301_0033,002b" {
 				t.Fail()
 			}
-			if vec.JA4() != "t130200_1301_0033,002b" {
+			if string(vec.JA4()) != "t130200_1301_234ea6891581" {
 				t.Fail()
 			}
 		})
@@ -336,13 +336,13 @@ func TestVector(t *testing.T) {
 				}
 				t.Run("ja3", func(t *testing.T) {
 					h := vec.JA3()
-					if !bytes.Equal(st.ja3, []byte(h)) {
+					if !bytes.Equal(st.ja3, h) {
 						t.Errorf("ja3 mismatch: got '%s', expect '%s'", h, string(st.ja3))
 					}
 				})
 				t.Run("ja4", func(t *testing.T) {
 					h := vec.JA4()
-					if !bytes.Equal(st.ja4, []byte(h)) {
+					if !bytes.Equal(st.ja4, h) {
 						t.Errorf("ja4 mismatch: got '%s', expect '%s'", h, string(st.ja4))
 					}
 				})
@@ -356,16 +356,16 @@ func TestVector(t *testing.T) {
 				}
 				t.Run("ja3", func(t *testing.T) {
 					h := vec.JA3()
-					if !bytes.Equal(st.ja3s, []byte(h)) {
+					if !bytes.Equal(st.ja3s, h) {
 						t.Errorf("ja3s mismatch: got '%s', expect '%s'", h, string(st.ja3s))
 					}
 				})
-				// t.Run("ja4", func(t *testing.T) {
-				// 	h := vec.JA4()
-				// 	if !bytes.Equal(st.ja4, []byte(h)) {
-				// 		t.Errorf("ja4 mismatch: got '%s', expect '%s'", h, string(st.ja4))
-				// 	}
-				// })
+				t.Run("ja4", func(t *testing.T) {
+					h := vec.JA4()
+					if !bytes.Equal(st.ja4s, h) {
+						t.Errorf("ja4s mismatch: got '%s', expect '%s'", h, string(st.ja4s))
+					}
+				})
 			})
 		})
 	}

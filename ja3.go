@@ -4,21 +4,29 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"strconv"
-
-	"github.com/koykov/byteconv"
 )
 
-func (vec *vector) JA3String() string {
-	switch vec.mtyp {
-	case MessageTypeClientHello:
-		return byteconv.B2S(vec.ja3c())
-	case MessageTypeServerHello:
-		return byteconv.B2S(vec.ja3s())
-	}
-	return ""
+func (vec *vector) JA3String() []byte {
+	return vec.AppendJA3String(nil)
 }
 
-func (vec *vector) JA3() string {
+func (vec *vector) AppendJA3String(dst []byte) []byte {
+	vec.resetBuf()
+	switch vec.mtyp {
+	case MessageTypeClientHello:
+		dst = append(dst, vec.ja3c()...)
+	case MessageTypeServerHello:
+		dst = append(dst, vec.ja3s()...)
+	}
+	return dst
+}
+
+func (vec *vector) JA3() []byte {
+	return vec.AppendJA3(nil)
+}
+
+func (vec *vector) AppendJA3(dst []byte) []byte {
+	vec.resetBuf()
 	var bin []byte
 	switch vec.mtyp {
 	case MessageTypeClientHello:
@@ -26,7 +34,7 @@ func (vec *vector) JA3() string {
 	case MessageTypeServerHello:
 		bin = vec.ja3s()
 	default:
-		return ""
+		return dst
 	}
 
 	if vec.ja3 == nil {
@@ -38,11 +46,8 @@ func (vec *vector) JA3() string {
 	vec.buf = append(vec.buf, "0000000000000000"...)
 	h := vec.ja3.Sum(vec.buf[off:off])
 
-	off = len(vec.buf)
-	vec.buf = append(vec.buf, "00000000000000000000000000000000"...)
-	hex.Encode(vec.buf[off:off+32], h)
-
-	return byteconv.B2S(vec.buf[off:])
+	dst = hex.AppendEncode(dst, h)
+	return dst
 }
 
 func (vec *vector) ja3c() []byte {
