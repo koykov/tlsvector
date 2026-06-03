@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestVector(t *testing.T) {
+func TestFingerprint(t *testing.T) {
 	t.Run("reference", func(t *testing.T) {
 		t.Run("client_hello", func(t *testing.T) {
 			raw := []byte{
@@ -371,7 +371,7 @@ func TestVector(t *testing.T) {
 	}
 }
 
-func BenchmarkVector(b *testing.B) {
+func BenchmarkFingerprint(b *testing.B) {
 	for i := 0; i < len(stages); i++ {
 		st := &stages[i]
 		b.Run(st.key, func(b *testing.B) {
@@ -382,19 +382,19 @@ func BenchmarkVector(b *testing.B) {
 					b.Fatal(err)
 				}
 				b.Run("ja3", func(b *testing.B) {
+					var buf []byte
 					b.ReportAllocs()
 					b.ResetTimer()
 					for j := 0; j < b.N; j++ {
-						vec.resetBuf()
-						_ = vec.JA3()
+						buf = vec.AppendJA3(buf[:0])
 					}
 				})
 				b.Run("ja4", func(b *testing.B) {
+					var buf []byte
 					b.ReportAllocs()
 					b.ResetTimer()
 					for j := 0; j < b.N; j++ {
-						vec.resetBuf()
-						_ = vec.JA4()
+						buf = vec.AppendJA4(buf[:0])
 					}
 				})
 			})
