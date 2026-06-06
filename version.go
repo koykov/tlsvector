@@ -45,6 +45,8 @@ func (mv Version) String() string {
 		return "TLS1.2"
 	case hi == 3 && lo == 4:
 		return "TLS1.3"
+	case hi == 254 && lo == 253:
+		return "DTLS1.2"
 	default:
 		return "UNK"
 	}
