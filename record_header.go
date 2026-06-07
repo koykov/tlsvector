@@ -18,7 +18,7 @@ func (rt RecordType) String() string {
 
 func (vec *vector) parseRecordHeader(off uint32) (_ uint32, err error) {
 	var raw []byte
-	if raw, off, err = vec.cut(off, 5); err != nil {
+	if raw, off, err = vec.cut(off, 3); err != nil {
 		return off, err
 	}
 	if raw[0] != 0x16 {
@@ -31,8 +31,23 @@ func (vec *vector) parseRecordHeader(off uint32) (_ uint32, err error) {
 	vec.rtyp = RecordTypeHandshake
 	// Read protocol version.
 	vec.rver = Version(binary.BigEndian.Uint16(raw[1:3]))
+
+	if vec.rver.Hi() > 0x03 {
+		// DTLS message found.
+		if raw, off, err = vec.cut(off, 8); err != nil {
+			return off, err
+		}
+		// Read key epoch.
+		vec.keph = binary.BigEndian.Uint16(raw[0:2])
+		// Read record sequence number.
+		vec.rseq = uint64(raw[7]) | uint64(raw[6])<<8 | uint64(raw[5])<<16 | uint64(raw[4])<<24 | uint64(raw[3])<<32 | uint64(raw[2])<<40
+	}
+
 	// Read handshake length.
-	vec.rlen = binary.BigEndian.Uint16(raw[3:5])
+	if raw, off, err = vec.cut(off, 2); err != nil {
+		return off, err
+	}
+	vec.rlen = binary.BigEndian.Uint16(raw[0:2])
 
 	return off, err
 }

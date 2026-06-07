@@ -55,6 +55,8 @@ type vector struct {
 
 	rtyp RecordType // record type (always handshake)
 	rver Version    // record version (legacy)
+	keph uint16     // key epoch (DTLS only)
+	rseq uint64     // sequence number (DTLS only)
 	rlen uint16     // record length (including handshake header)
 
 	mtyp MessageType   // message type
@@ -324,6 +326,8 @@ func (vec *vector) Reset() {
 
 	vec.rtyp = RecordTypeUnknown
 	vec.rver = 0
+	vec.keph = 0
+	vec.rseq = 0
 	vec.rlen = 0
 
 	vec.mtyp = MessageTypeUnknown
