@@ -3,7 +3,7 @@ package tlsvector
 import "encoding/binary"
 
 func (vec *vector) parseHandshakeReconstructionData(off uint32) (_ uint32, err error) {
-	if vec.rver.Hi() < 0x03 {
+	if vec.rver.Hi() <= 0x03 {
 		// Non DTLS.
 		return off, nil
 	}
