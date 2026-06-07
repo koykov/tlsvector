@@ -19,10 +19,14 @@ type Interface interface {
 
 	RecordType() RecordType
 	RecordLegacyVersion() Version
+	KeyEpoch() uint16 // DTLS
 	RecordLength() uint16
 
 	MessageType() MessageType
 	MessageLength() uint32
+	MessageSequenceNumber() uint16 // DTLS
+	FragmentOffset() uint32        // DTLS
+	FragmentLength() uint32        // DTLS
 	LegacyVersion() Version
 	Random() []byte
 	SessionID() []byte
@@ -87,6 +91,10 @@ func (vec *vector) RecordLegacyVersion() Version {
 	return vec.rver
 }
 
+func (vec *vector) KeyEpoch() uint16 {
+	return vec.keph
+}
+
 func (vec *vector) RecordLength() uint16 {
 	return vec.rlen
 }
@@ -97,6 +105,18 @@ func (vec *vector) MessageType() MessageType {
 
 func (vec *vector) MessageLength() uint32 {
 	return vec.mlen
+}
+
+func (vec *vector) MessageSequenceNumber() uint16 {
+	return vec.mseq
+}
+
+func (vec *vector) FragmentOffset() uint32 {
+	return vec.frgo
+}
+
+func (vec *vector) FragmentLength() uint32 {
+	return vec.frgl
 }
 
 func (vec *vector) LegacyVersion() Version {
