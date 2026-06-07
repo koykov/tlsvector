@@ -61,6 +61,9 @@ type vector struct {
 
 	mtyp MessageType   // message type
 	mlen uint32        // message length
+	mseq uint16        // message sequence number (DTLS only)
+	frgo uint32        // fragment offset (DTLS only)
+	frgl uint32        // fragment length (DTLS only)
 	mver Version       // TLS version (legacy)
 	rand uint64        // client random
 	sid  uint64        // session ID
@@ -332,6 +335,9 @@ func (vec *vector) Reset() {
 
 	vec.mtyp = MessageTypeUnknown
 	vec.mlen = 0
+	vec.mseq = 0
+	vec.frgo = 0
+	vec.frgl = 0
 	vec.mver = 0
 	vec.rand = 0
 	vec.sid = 0
