@@ -6,11 +6,11 @@ func (mv Version) Raw() uint16 {
 	return uint16(mv)
 }
 
-func (mv Version) Lo() uint8 {
+func (mv Version) Hi() uint8 {
 	return uint8(mv >> 8)
 }
 
-func (mv Version) Hi() uint8 {
+func (mv Version) Lo() uint8 {
 	return uint8(mv)
 }
 
