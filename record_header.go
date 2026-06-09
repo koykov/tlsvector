@@ -32,7 +32,7 @@ func (vec *vector) parseRecordHeader(off uint32) (_ uint32, err error) {
 	// Read protocol version.
 	vec.rver = Version(binary.BigEndian.Uint16(raw[1:3]))
 
-	if vec.rver.Hi() > 0x03 {
+	if vec.rver.Hi() == 0xfe {
 		// DTLS message found.
 		if raw, off, err = vec.cut(off, 8); err != nil {
 			return off, err
