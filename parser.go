@@ -13,6 +13,9 @@ func (vec *vector) Parse(raw []byte) (err error) {
 	if off, err = vec.parseHandshakeHeader(off); err != nil {
 		return
 	}
+	if off, err = vec.parseHandshakeReconstructionData(off); err != nil {
+		return
+	}
 	if off, err = vec.parseTLSVersion(off); err != nil {
 		return
 	}
