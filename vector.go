@@ -173,15 +173,26 @@ func (vec *vector) String() string {
 }
 
 func (vec *vector) AppendDescription(dst []byte) []byte {
+	dtls := vec.rver.Hi() == 0xfe
+
 	dst = append(dst, "Record:\n"...)
 
 	dst = fmt.Appendf(dst, "\tType: %s (%d)\n", vec.rtyp.String(), vec.rtyp)
 	dst = fmt.Appendf(dst, "\tLegacy version: %s (0x%04X)\n", vec.rver.String(), vec.rver.Raw())
+	if dtls {
+		dst = fmt.Appendf(dst, "\tKey epoch: 0x%04X\n", vec.keph)
+		dst = fmt.Appendf(dst, "\tRecord sequence number: 0x%12X\n", vec.rseq)
+	}
 	dst = fmt.Appendf(dst, "\tLength: %d\n", vec.rlen)
 
 	dst = append(dst, "Handshake:\n"...)
 	dst = fmt.Appendf(dst, "\tType: %s (0x%02X)\n", vec.mtyp.String(), vec.mtyp.Raw())
 	dst = fmt.Appendf(dst, "\tLength: %d\n", vec.mlen)
+	if dtls {
+		dst = fmt.Appendf(dst, "\tMessage sequence number: 0x%04X\n", vec.mseq)
+		dst = fmt.Appendf(dst, "\tFragment offset: 0x%06X\n", vec.frgo)
+		dst = fmt.Appendf(dst, "\tFragment length: 0x%06X\n", vec.frgl)
+	}
 	ver := vec.Version()
 	dst = fmt.Appendf(dst, "\tVersion: %s (0x%04X)\n", ver.String(), ver.Raw())
 	dst = fmt.Appendf(dst, "\tRandom: %X\n", vec.Random())
