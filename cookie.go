@@ -13,5 +13,6 @@ func (vec *vector) parseCookie(off uint32) (_ uint32, err error) {
 		return off, err
 	}
 	// todo parse cookies
+	off += uint32(raw[0])
 	return off, nil
 }
