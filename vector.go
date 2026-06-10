@@ -204,6 +204,8 @@ func (vec *vector) AppendDescription(dst []byte) []byte {
 		dst = append(dst, "\tSession ID: N/D\n"...)
 	}
 
+	// todo print cookies
+
 	if len(vec.chps) > 0 {
 		dst = append(dst, "\tCipher Suites:\n"...)
 		for i := 0; i < len(vec.chps); i++ {

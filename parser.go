@@ -25,6 +25,9 @@ func (vec *vector) Parse(raw []byte) (err error) {
 	if off, err = vec.parseSessionID(off); err != nil {
 		return
 	}
+	if off, err = vec.parseCookie(off); err != nil {
+		return
+	}
 	switch vec.mtyp {
 	case MessageTypeClientHello:
 		if off, err = vec.parseCipherSuites(off); err != nil {
