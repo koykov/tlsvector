@@ -181,7 +181,7 @@ func (vec *vector) AppendDescription(dst []byte) []byte {
 	dst = fmt.Appendf(dst, "\tLegacy version: %s (0x%04X)\n", vec.rver.String(), vec.rver.Raw())
 	if dtls {
 		dst = fmt.Appendf(dst, "\tKey epoch: 0x%04X\n", vec.keph)
-		dst = fmt.Appendf(dst, "\tRecord sequence number: 0x%12X\n", vec.rseq)
+		dst = fmt.Appendf(dst, "\tRecord sequence number: 0x%012X\n", vec.rseq)
 	}
 	dst = fmt.Appendf(dst, "\tLength: %d\n", vec.rlen)
 
@@ -250,6 +250,8 @@ func (vec *vector) JSON() string {
 }
 
 func (vec *vector) AppendJSON(dst []byte) []byte {
+	dtls := vec.rver.Hi() == 0xfe
+
 	dst = append(dst, '{')
 	dst = append(dst, `"record":{`...)
 	dst = append(dst, `"type":"`...)
@@ -262,6 +264,12 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 	dst = append(dst, ver.String()...)
 	dst = append(dst, `","version_raw":`...)
 	dst = strconv.AppendUint(dst, uint64(ver.Raw()), 10)
+	if dtls {
+		dst = append(dst, `,"key_epoch":`...)
+		dst = strconv.AppendUint(dst, uint64(vec.keph), 10)
+		dst = append(dst, `,"record_sequence_number":`...)
+		dst = strconv.AppendUint(dst, vec.rseq, 10)
+	}
 	dst = append(dst, `,"length":`...)
 	dst = strconv.AppendUint(dst, uint64(vec.rlen), 10)
 
@@ -271,6 +279,14 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 	dst = append(dst, `",`...)
 	dst = append(dst, `"type_raw":`...)
 	dst = strconv.AppendUint(dst, uint64(vec.mtyp.Raw()), 10)
+	if dtls {
+		dst = append(dst, `,"record_sequence_number":`...)
+		dst = strconv.AppendUint(dst, uint64(vec.mseq), 10)
+		dst = append(dst, `,"fragment_offset":`...)
+		dst = strconv.AppendUint(dst, uint64(vec.frgo), 10)
+		dst = append(dst, `,"fragment_length":`...)
+		dst = strconv.AppendUint(dst, uint64(vec.frgl), 10)
+	}
 	dst = append(dst, `,"legacy_version":"`...)
 	dst = append(dst, vec.mver.String()...)
 	dst = append(dst, `","legacy_version_raw":`...)
@@ -286,6 +302,9 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 		dst = hex.AppendEncode(dst, sid)
 		dst = append(dst, `",`...)
 	}
+
+	// todo print cookies
+
 	if len(vec.chps) > 0 {
 		dst = append(dst, `"cipher_suites":[`...)
 		for i := 0; i < len(vec.chps); i++ {
