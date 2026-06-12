@@ -105,6 +105,11 @@ func (vec *vector) ja4c() ([]byte, uint32, uint32) {
 	vec.buf = append(vec.buf, ver.Short()...)
 	vec.buf = append(vec.buf, sni)
 
+	if dtls := vec.rver.Hi() == 0xfe; dtls {
+		vec.buf[off] = 'd'
+		vec.buf[off+1] = 'd'
+	}
+
 	var chlen int
 	for i := 0; i < len(vec.chps); i++ {
 		cs := vec.chps[i]
