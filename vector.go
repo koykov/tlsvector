@@ -211,10 +211,12 @@ func (vec *vector) AppendDescription(dst []byte) []byte {
 		dst = append(dst, "\tSession ID: N/D\n"...)
 	}
 
-	cookie := vec.cook.Bytes()
-	dst = fmt.Appendf(dst, "\tCookie length: %d\n", len(cookie))
-	if len(cookie) > 0 {
-		dst = fmt.Appendf(dst, "\tCookie: %X\n", cookie)
+	if dtls {
+		cookie := vec.cook.Bytes()
+		dst = fmt.Appendf(dst, "\tCookie length: %d\n", len(cookie))
+		if len(cookie) > 0 {
+			dst = fmt.Appendf(dst, "\tCookie: %X\n", cookie)
+		}
 	}
 
 	if len(vec.chps) > 0 {
@@ -314,13 +316,15 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 		dst = append(dst, `",`...)
 	}
 
-	cookie := vec.cook.Bytes()
-	dst = append(dst, `,"cookie_length":`...)
-	dst = strconv.AppendUint(dst, uint64(len(cookie)), 10)
-	if len(cookie) > 0 {
-		dst = append(dst, `,"cookie_length":"`...)
-		dst = hex.AppendEncode(dst, cookie)
-		dst = append(dst, `",`...)
+	if dtls {
+		cookie := vec.cook.Bytes()
+		dst = append(dst, `,"cookie_length":`...)
+		dst = strconv.AppendUint(dst, uint64(len(cookie)), 10)
+		if len(cookie) > 0 {
+			dst = append(dst, `,"cookie_length":"`...)
+			dst = hex.AppendEncode(dst, cookie)
+			dst = append(dst, `",`...)
+		}
 	}
 
 	if len(vec.chps) > 0 {
