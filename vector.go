@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/koykov/byteconv"
+	"github.com/koykov/byteptr"
 )
 
 type Interface interface {
@@ -30,6 +31,7 @@ type Interface interface {
 	LegacyVersion() Version
 	Random() []byte
 	SessionID() []byte
+	Cookie() []byte
 	CipherSuites() []CipherSuite
 	CompressionMethod() uint8
 	Extensions() []Extension
@@ -63,18 +65,19 @@ type vector struct {
 	rseq uint64     // sequence number (DTLS only)
 	rlen uint16     // record length (including handshake header)
 
-	mtyp MessageType   // message type
-	mlen uint32        // message length
-	mseq uint16        // message sequence number (DTLS only)
-	frgo uint32        // fragment offset (DTLS only)
-	frgl uint32        // fragment length (DTLS only)
-	mver Version       // TLS version (legacy)
-	rand uint64        // client random
-	sid  uint64        // session ID
-	chps []CipherSuite // cipher suites
-	cmpl uint8         // compression method
-	cmps uint8         // compression method
-	ext  []Extension   // extensions
+	mtyp MessageType     // message type
+	mlen uint32          // message length
+	mseq uint16          // message sequence number (DTLS only)
+	frgo uint32          // fragment offset (DTLS only)
+	frgl uint32          // fragment length (DTLS only)
+	mver Version         // TLS version (legacy)
+	rand uint64          // client random
+	sid  uint64          // session ID
+	cook byteptr.Byteptr // cookie
+	chps []CipherSuite   // cipher suites
+	cmpl uint8           // compression method
+	cmps uint8           // compression method
+	ext  []Extension     // extensions
 
 	ja3, ja4 hash.Hash
 }
@@ -131,6 +134,10 @@ func (vec *vector) Random() []byte {
 func (vec *vector) SessionID() []byte {
 	lo, hi := uint32(vec.sid>>32), uint32(vec.sid)
 	return vec.raw[lo:hi]
+}
+
+func (vec *vector) Cookie() []byte {
+	return vec.cook.Bytes()
 }
 
 func (vec *vector) CipherSuites() []CipherSuite {
@@ -204,7 +211,11 @@ func (vec *vector) AppendDescription(dst []byte) []byte {
 		dst = append(dst, "\tSession ID: N/D\n"...)
 	}
 
-	// todo print cookies
+	cookie := vec.cook.Bytes()
+	dst = fmt.Appendf(dst, "\tCookie length: %d\n", len(cookie))
+	if len(cookie) > 0 {
+		dst = fmt.Appendf(dst, "\tCookie: %X\n", cookie)
+	}
 
 	if len(vec.chps) > 0 {
 		dst = append(dst, "\tCipher Suites:\n"...)
@@ -303,7 +314,14 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 		dst = append(dst, `",`...)
 	}
 
-	// todo print cookies
+	cookie := vec.cook.Bytes()
+	dst = append(dst, `,"cookie_length":`...)
+	dst = strconv.AppendUint(dst, uint64(len(cookie)), 10)
+	if len(cookie) > 0 {
+		dst = append(dst, `,"cookie_length":"`...)
+		dst = hex.AppendEncode(dst, cookie)
+		dst = append(dst, `",`...)
+	}
 
 	if len(vec.chps) > 0 {
 		dst = append(dst, `"cipher_suites":[`...)
@@ -393,6 +411,7 @@ func (vec *vector) Reset() {
 	vec.mver = 0
 	vec.rand = 0
 	vec.sid = 0
+	vec.cook.Reset()
 	vec.chps = vec.chps[:0]
 	vec.cmpl = 0
 	vec.cmps = 0

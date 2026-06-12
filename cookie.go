@@ -12,7 +12,7 @@ func (vec *vector) parseCookie(off uint32) (_ uint32, err error) {
 	if raw[0] == 0 {
 		return off, err
 	}
-	// todo parse cookies
+	vec.cook.Init(vec.raw, int(off), int(uint32(raw[0])))
 	off += uint32(raw[0])
 	return off, nil
 }
