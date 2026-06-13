@@ -265,17 +265,17 @@ func (vec *vector) JSON() string {
 func (vec *vector) AppendJSON(dst []byte) []byte {
 	dtls := vec.rver.Hi() == 0xfe
 
-	dst = append(dst, '{')
-	dst = append(dst, `"record":{`...)
+	dst = append(dst, `{"record":{`...)
 	dst = append(dst, `"type":"`...)
 	dst = append(dst, vec.rtyp.String()...)
-	dst = append(dst, `",`...)
-	dst = append(dst, `"type_raw":`...)
+	dst = append(dst, '"')
+	dst = append(dst, `,"type_raw":`...)
 	dst = strconv.AppendUint(dst, uint64(vec.rtyp), 10)
 	ver := vec.Version()
 	dst = append(dst, `,"version":"`...)
 	dst = append(dst, ver.String()...)
-	dst = append(dst, `","version_raw":`...)
+	dst = append(dst, '"')
+	dst = append(dst, `,"version_raw":`...)
 	dst = strconv.AppendUint(dst, uint64(ver.Raw()), 10)
 	if dtls {
 		dst = append(dst, `,"key_epoch":`...)
@@ -285,12 +285,13 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 	}
 	dst = append(dst, `,"length":`...)
 	dst = strconv.AppendUint(dst, uint64(vec.rlen), 10)
+	dst = append(dst, '}')
 
-	dst = append(dst, `},"handshake":{`...)
+	dst = append(dst, `,"handshake":{`...)
 	dst = append(dst, `"type":"`...)
 	dst = append(dst, vec.mtyp.String()...)
-	dst = append(dst, `",`...)
-	dst = append(dst, `"type_raw":`...)
+	dst = append(dst, '"')
+	dst = append(dst, `,"type_raw":`...)
 	dst = strconv.AppendUint(dst, uint64(vec.mtyp.Raw()), 10)
 	if dtls {
 		dst = append(dst, `,"record_sequence_number":`...)
@@ -302,18 +303,19 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 	}
 	dst = append(dst, `,"legacy_version":"`...)
 	dst = append(dst, vec.mver.String()...)
-	dst = append(dst, `","legacy_version_raw":`...)
+	dst = append(dst, '"')
+	dst = append(dst, `,"legacy_version_raw":`...)
 	dst = strconv.AppendUint(dst, uint64(vec.mver.Raw()), 10)
 	dst = append(dst, `,"random":"`...)
 	dst = hex.AppendEncode(dst, vec.Random())
-	dst = append(dst, `","session_id_length":`...)
+	dst = append(dst, '"')
+	dst = append(dst, `,"session_id_length":`...)
 	sid := vec.SessionID()
 	dst = strconv.AppendUint(dst, uint64(len(sid)), 10)
-	dst = append(dst, ',')
 	if len(sid) > 0 {
-		dst = append(dst, `"session_id":"`...)
+		dst = append(dst, `,"session_id":"`...)
 		dst = hex.AppendEncode(dst, sid)
-		dst = append(dst, `",`...)
+		dst = append(dst, '"')
 	}
 
 	if dtls {
@@ -321,28 +323,29 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 		dst = append(dst, `,"cookie_length":`...)
 		dst = strconv.AppendUint(dst, uint64(len(cookie)), 10)
 		if len(cookie) > 0 {
-			dst = append(dst, `,"cookie_length":"`...)
+			dst = append(dst, `,"cookie":"`...)
 			dst = hex.AppendEncode(dst, cookie)
-			dst = append(dst, `",`...)
+			dst = append(dst, '"')
 		}
 	}
 
 	if len(vec.chps) > 0 {
-		dst = append(dst, `"cipher_suites":[`...)
+		dst = append(dst, `,"cipher_suites":[`...)
 		for i := 0; i < len(vec.chps); i++ {
 			if i > 0 {
 				dst = append(dst, ',')
 			}
 			dst = append(dst, `{"name":"`...)
 			dst = append(dst, vec.chps[i].String()...)
-			dst = append(dst, `","value":`...)
+			dst = append(dst, '"')
+			dst = append(dst, `,"value":`...)
 			dst = strconv.AppendUint(dst, uint64(vec.chps[i].Raw()), 10)
 			dst = append(dst, `}`...)
 		}
-		dst = append(dst, `],`...)
+		dst = append(dst, `]`...)
 	}
 
-	dst = append(dst, `"compression_method_length":`...)
+	dst = append(dst, `,"compression_method_length":`...)
 	dst = strconv.AppendUint(dst, uint64(vec.cmpl), 10)
 	if vec.cmpl > 0 {
 		dst = append(dst, `,"compression_method":`...)
@@ -380,10 +383,10 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 					}
 				}
 			}
-			dst = append(dst, `","type":`...)
+			dst = append(dst, '"')
+			dst = append(dst, `,"type":`...)
 			dst = strconv.AppendUint(dst, uint64(e.Type.Raw()), 10)
-			dst = append(dst, `,`...)
-			dst = append(dst, `"payload":{`...)
+			dst = append(dst, `,"payload":{`...)
 			dst = e.AppendJSON(dst)
 			dst = append(dst, '}')
 			dst = append(dst, '}')

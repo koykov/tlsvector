@@ -67,8 +67,8 @@ Handshake:
 	Type: CLIENT_HELLO (0x01)
 	Length: 145
 	Message sequence number: 0x0000
-	Fragment offset: 0x000091
-	Fragment length: 0x000000
+	Fragment offset: 0x000000
+	Fragment length: 0x000091
 	Version: DTLS1.3 (0xFEFC)
 	Random: E0E1E2E3E4E5E6E7E8E9EAEBECEDEEEFF0F1F2F3F4F5F6F7F8F9FAFBFCFDFEFF
 	Session ID Length: 0
