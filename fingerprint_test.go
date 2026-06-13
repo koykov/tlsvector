@@ -432,7 +432,6 @@ func TestFingerprint(t *testing.T) {
 				expectJA3s := []byte("65277,49196-49200-159-52393-52392-52394-49195-49199-158-49188-49192-107-49187-49191-103-49162-49172-57-49161-49171-51-173-171-52398-52397-52396-157-169-52395-172-170-156-168-61-60-49208-49206-183-179-149-145-53-175-141-49207-49205-182-178-148-144-47-174-140,65281-11-10-35-22-23-13,29-23-30-24-25,0-1-2")
 				expectJA4 := []byte("dd2i530700_bd88c1005a4e_36cef8aed422")
 				expectJA4s := []byte("dd2i530700_002f,0033,0035,0039,003c,003d,0067,006b,008c,008d,0090,0091,0094,0095,009c,009d,009e,009f,00a8,00a9,00aa,00ab,00ac,00ad,00ae,00af,00b2,00b3,00b6,00b7,c009,c00a,c013,c014,c023,c024,c027,c028,c02b,c02c,c02f,c030,c035,c036,c037,c038,cca8,cca9,ccaa,ccab,ccac,ccad,ccae_000a,000b,000d,0016,0017,0023,ff01_0403,0503,0603,0807,0808,0809,080a,080b,0804,0805,0806,0401,0501,0601,0303,0301,0302,0402,0502,0602")
-				_, _, _, _, _ = raw, expectJA3, expectJA3s, expectJA4, expectJA4s
 				_ = desc
 
 				vec := New()
@@ -493,8 +492,30 @@ func TestFingerprint(t *testing.T) {
 `
 				expectJA3 := []byte("dc7def240832acb0a8f484332861137f")
 				expectJA3s := []byte("65277,140,65281-35-22-23")
-				_, _, _ = raw, expectJA3, expectJA3s
+				expectJA4 := []byte("dd20400_008c_44d9b4fea138")
+				expectJA4s := []byte("dd20400_008c_ff01,0023,0016,0017")
 				_ = desc
+				vec := New()
+				if err := vec.Parse(raw); err != nil {
+					t.Fail()
+				}
+				ja3s := vec.JA3String()
+				if !bytes.Equal(ja3s, expectJA3s) {
+					t.Fail()
+				}
+				ja3 := vec.JA3()
+				if !bytes.Equal(ja3, expectJA3) {
+					t.Fail()
+				}
+
+				ja4s := vec.JA4String()
+				if !bytes.Equal(ja4s, expectJA4s) {
+					t.Fail()
+				}
+				ja4 := vec.JA4()
+				if !bytes.Equal(ja4, expectJA4) {
+					t.Fail()
+				}
 			})
 		})
 	})
