@@ -263,6 +263,11 @@ func (vec *vector) ja4s() ([]byte, uint32, uint32) {
 	vec.buf = strconv.AppendInt(vec.buf, int64(extlen), 10)
 	vec.buf = append(vec.buf, alpn[:]...)
 
+	if dtls := vec.rver.Hi() == 0xfe; dtls {
+		vec.buf[off] = 'd'
+		vec.buf[off+1] = 'd'
+	}
+
 	// cipher suites part
 	vec.buf = append(vec.buf, '_')
 	var cslo, cshi uint16
