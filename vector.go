@@ -197,8 +197,8 @@ func (vec *vector) AppendDescription(dst []byte) []byte {
 	dst = fmt.Appendf(dst, "\tLength: %d\n", vec.mlen)
 	if dtls {
 		dst = fmt.Appendf(dst, "\tMessage sequence number: 0x%04X\n", vec.mseq)
-		dst = fmt.Appendf(dst, "\tFragment offset: 0x%06X\n", vec.frgo)
-		dst = fmt.Appendf(dst, "\tFragment length: 0x%06X\n", vec.frgl)
+		dst = fmt.Appendf(dst, "\tFragment offset: 0x%06X\n", vec.frgl)
+		dst = fmt.Appendf(dst, "\tFragment length: 0x%06X\n", vec.frgo)
 	}
 	ver := vec.Version()
 	dst = fmt.Appendf(dst, "\tVersion: %s (0x%04X)\n", ver.String(), ver.Raw())
