@@ -8,8 +8,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strconv"
-	"strings"
-	"testing"
 )
 
 type stage struct {
@@ -96,17 +94,4 @@ func init() {
 		}
 		return nil
 	})
-}
-
-func getStage(key string) *stage {
-	i, ok := stagesReg[key]
-	if !ok {
-		return nil
-	}
-	return &stages[i]
-}
-
-func getTBName(tb testing.TB) string {
-	key := tb.Name()
-	return key[strings.Index(key, "/")+1:]
 }

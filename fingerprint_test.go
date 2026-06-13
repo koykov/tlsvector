@@ -3,6 +3,8 @@ package tlsvector
 import (
 	"bytes"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestFingerprint(t *testing.T) {
@@ -125,22 +127,11 @@ func TestFingerprint(t *testing.T) {
 				}
 				vec := New()
 				err := vec.Parse(raw)
-				if err != nil {
-					t.Error(err)
-					return
-				}
-				if string(vec.JA3String()) != "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,5-23-11-13-18-65037-51-10-45-65281-0-43-35-27-16-17613,4588-29-23-24,0" {
-					t.Fail()
-				}
-				if string(vec.JA3()) != "d68b9314066c879bf188950f16935411" {
-					t.Fail()
-				}
-				if string(vec.JA4String()) != "t13d1516h2_002f,0035,009c,009d,1301,1302,1303,c013,c014,c02b,c02c,c02f,c030,cca8,cca9_0005,000a,000b,000d,0012,0017,001b,0023,002b,002d,0033,44cd,fe0d,ff01_0403,0804,0401,0503,0805,0501,0806,0601" {
-					t.Fail()
-				}
-				if string(vec.JA4()) != "t13d1516h2_8daaf6152771_d8a2da3f94cd" {
-					t.Fail()
-				}
+				assert.NoError(t, err)
+				assert.Equal(t, string(vec.JA3String()), "771,4865-4866-4867-49195-49199-49196-49200-52393-52392-49171-49172-156-157-47-53,5-23-11-13-18-65037-51-10-45-65281-0-43-35-27-16-17613,4588-29-23-24,0")
+				assert.Equal(t, string(vec.JA3()), "d68b9314066c879bf188950f16935411")
+				assert.Equal(t, string(vec.JA4String()), "t13d1516h2_002f,0035,009c,009d,1301,1302,1303,c013,c014,c02b,c02c,c02f,c030,cca8,cca9_0005,000a,000b,000d,0012,0017,001b,0023,002b,002d,0033,44cd,fe0d,ff01_0403,0804,0401,0503,0805,0501,0806,0601")
+				assert.Equal(t, string(vec.JA4()), "t13d1516h2_8daaf6152771_d8a2da3f94cd")
 			})
 			t.Run("server_hello", func(t *testing.T) {
 				raw := []byte{
@@ -308,22 +299,11 @@ func TestFingerprint(t *testing.T) {
 				}
 				vec := New()
 				err := vec.Parse(raw)
-				if err != nil {
-					t.Error(err)
-					return
-				}
-				if string(vec.JA3String()) != "771,4865,51-43" {
-					t.Fail()
-				}
-				if string(vec.JA3()) != "eb1d94daa7e0344597e756a1fb6e7054" {
-					t.Fail()
-				}
-				if string(vec.JA4String()) != "t130200_1301_0033,002b" {
-					t.Fail()
-				}
-				if string(vec.JA4()) != "t130200_1301_234ea6891581" {
-					t.Fail()
-				}
+				assert.NoError(t, err)
+				assert.Equal(t, string(vec.JA3String()), "771,4865,51-43")
+				assert.Equal(t, string(vec.JA3()), "eb1d94daa7e0344597e756a1fb6e7054")
+				assert.Equal(t, string(vec.JA4String()), "t130200_1301_0033,002b")
+				assert.Equal(t, string(vec.JA4()), "t130200_1301_234ea6891581")
 			})
 		})
 		for i := 0; i < len(stages); i++ {
@@ -435,26 +415,20 @@ func TestFingerprint(t *testing.T) {
 				_ = desc
 
 				vec := New()
-				if err := vec.Parse(raw); err != nil {
-					t.Fail()
-				}
+				err := vec.Parse(raw)
+				assert.NoError(t, err)
+
 				ja3s := vec.JA3String()
-				if !bytes.Equal(ja3s, expectJA3s) {
-					t.Fail()
-				}
+				assert.Equal(t, ja3s, expectJA3s)
+
 				ja3 := vec.JA3()
-				if !bytes.Equal(ja3, expectJA3) {
-					t.Fail()
-				}
+				assert.Equal(t, ja3, expectJA3)
 
 				ja4s := vec.JA4String()
-				if !bytes.Equal(ja4s, expectJA4s) {
-					t.Fail()
-				}
+				assert.Equal(t, ja4s, expectJA4s)
+
 				ja4 := vec.JA4()
-				if !bytes.Equal(ja4, expectJA4) {
-					t.Fail()
-				}
+				assert.Equal(t, ja4, expectJA4)
 			})
 			t.Run("server hello", func(t *testing.T) {
 				raw := []byte{
@@ -496,58 +470,54 @@ func TestFingerprint(t *testing.T) {
 				expectJA4s := []byte("dd20400_008c_ff01,0023,0016,0017")
 				_ = desc
 				vec := New()
-				if err := vec.Parse(raw); err != nil {
-					t.Fail()
-				}
+				err := vec.Parse(raw)
+				assert.NoError(t, err)
+
 				ja3s := vec.JA3String()
-				if !bytes.Equal(ja3s, expectJA3s) {
-					t.Fail()
-				}
+				assert.Equal(t, ja3s, expectJA3s)
+
 				ja3 := vec.JA3()
-				if !bytes.Equal(ja3, expectJA3) {
-					t.Fail()
-				}
+				assert.Equal(t, ja3, expectJA3)
 
 				ja4s := vec.JA4String()
-				if !bytes.Equal(ja4s, expectJA4s) {
-					t.Fail()
-				}
+				assert.Equal(t, ja4s, expectJA4s)
+
 				ja4 := vec.JA4()
-				if !bytes.Equal(ja4, expectJA4) {
-					t.Fail()
-				}
+				assert.Equal(t, ja4, expectJA4)
 			})
 		})
 	})
 }
 
 func BenchmarkFingerprint(b *testing.B) {
-	for i := 0; i < len(stages); i++ {
-		st := &stages[i]
-		b.Run(st.key, func(b *testing.B) {
-			b.Run("client hello", func(b *testing.B) {
-				vec := &vector{}
-				err := vec.Parse(st.flows[0])
-				if err != nil {
-					b.Fatal(err)
-				}
-				b.Run("ja3", func(b *testing.B) {
-					var buf []byte
-					b.ReportAllocs()
-					b.ResetTimer()
-					for j := 0; j < b.N; j++ {
-						buf = vec.AppendJA3(buf[:0])
+	b.Run("tls", func(b *testing.B) {
+		for i := 0; i < len(stages); i++ {
+			st := &stages[i]
+			b.Run(st.key, func(b *testing.B) {
+				b.Run("client hello", func(b *testing.B) {
+					vec := &vector{}
+					err := vec.Parse(st.flows[0])
+					if err != nil {
+						b.Fatal(err)
 					}
-				})
-				b.Run("ja4", func(b *testing.B) {
-					var buf []byte
-					b.ReportAllocs()
-					b.ResetTimer()
-					for j := 0; j < b.N; j++ {
-						buf = vec.AppendJA4(buf[:0])
-					}
+					b.Run("ja3", func(b *testing.B) {
+						var buf []byte
+						b.ReportAllocs()
+						b.ResetTimer()
+						for j := 0; j < b.N; j++ {
+							buf = vec.AppendJA3(buf[:0])
+						}
+					})
+					b.Run("ja4", func(b *testing.B) {
+						var buf []byte
+						b.ReportAllocs()
+						b.ResetTimer()
+						for j := 0; j < b.N; j++ {
+							buf = vec.AppendJA4(buf[:0])
+						}
+					})
 				})
 			})
-		})
-	}
+		}
+	})
 }

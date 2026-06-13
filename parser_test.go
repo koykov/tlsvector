@@ -1,8 +1,9 @@
 package tlsvector
 
 import (
-	"bytes"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestParser(t *testing.T) {
@@ -13,17 +14,11 @@ func TestParser(t *testing.T) {
 				t.Run("client hello", func(t *testing.T) {
 					vec := New()
 					err := vec.Parse(st.flows[0])
-					if err != nil {
-						t.Fatal(err)
-					}
+					assert.NoError(t, err)
 					js := vec.JSON()
-					if !bytes.Equal([]byte(js), st.chjson) {
-						t.Errorf("mismatch result and expectation")
-					}
+					assert.Equal(t, []byte(js), st.chjson)
 					s := vec.String()
-					if !bytes.Equal([]byte(s), st.chfmt) {
-						t.Errorf("mismatch result and expectation")
-					}
+					assert.Equal(t, []byte(s), st.chfmt)
 				})
 				t.Run("server hello", func(t *testing.T) {
 					if len(st.shfmt) == 0 {
@@ -31,13 +26,9 @@ func TestParser(t *testing.T) {
 					}
 					vec := New()
 					err := vec.Parse(st.flows[1])
-					if err != nil {
-						t.Fatal(err)
-					}
+					assert.NoError(t, err)
 					s := vec.String()
-					if !bytes.Equal([]byte(s), st.shfmt) {
-						t.Errorf("mismatch result and expectation")
-					}
+					assert.Equal(t, []byte(s), st.shfmt)
 				})
 			})
 		}
@@ -107,13 +98,9 @@ Handshake:
 `
 			vec := New()
 			err := vec.Parse(raw)
-			if err != nil {
-				t.Fatal(err)
-			}
+			assert.NoError(t, err)
 			desc := vec.String()
-			if desc != expect {
-				t.Fail()
-			}
+			assert.Equal(t, desc, expect)
 		})
 	})
 }
