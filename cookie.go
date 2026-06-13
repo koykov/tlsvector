@@ -1,7 +1,7 @@
 package tlsvector
 
 func (vec *vector) parseCookie(off uint32) (_ uint32, err error) {
-	if vec.rver.Hi() != 0xfe {
+	if vec.rver.Hi() != 0xfe || vec.mtyp == MessageTypeServerHello {
 		// Non DTLS.
 		return off, nil
 	}

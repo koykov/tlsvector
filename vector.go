@@ -211,7 +211,7 @@ func (vec *vector) AppendDescription(dst []byte) []byte {
 		dst = append(dst, "\tSession ID: N/D\n"...)
 	}
 
-	if dtls {
+	if dtls && vec.mtyp != MessageTypeServerHello {
 		cookie := vec.cook.Bytes()
 		dst = fmt.Appendf(dst, "\tCookie length: %d\n", len(cookie))
 		if len(cookie) > 0 {
@@ -318,7 +318,7 @@ func (vec *vector) AppendJSON(dst []byte) []byte {
 		dst = append(dst, '"')
 	}
 
-	if dtls {
+	if dtls && vec.mtyp != MessageTypeServerHello {
 		cookie := vec.cook.Bytes()
 		dst = append(dst, `,"cookie_length":`...)
 		dst = strconv.AppendUint(dst, uint64(len(cookie)), 10)
