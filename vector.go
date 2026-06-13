@@ -71,7 +71,7 @@ type vector struct {
 	frgo uint32          // fragment offset (DTLS only)
 	frgl uint32          // fragment length (DTLS only)
 	mver Version         // TLS version (legacy)
-	rand uint64          // client random
+	rand byteptr.Byteptr // client random
 	sid  uint64          // session ID
 	cook byteptr.Byteptr // cookie
 	chps []CipherSuite   // cipher suites
@@ -127,8 +127,7 @@ func (vec *vector) LegacyVersion() Version {
 }
 
 func (vec *vector) Random() []byte {
-	lo, hi := uint32(vec.rand>>32), uint32(vec.rand)
-	return vec.raw[lo:hi]
+	return vec.rand.Bytes()
 }
 
 func (vec *vector) SessionID() []byte {
@@ -416,7 +415,7 @@ func (vec *vector) Reset() {
 	vec.frgo = 0
 	vec.frgl = 0
 	vec.mver = 0
-	vec.rand = 0
+	vec.rand.Reset()
 	vec.sid = 0
 	vec.cook.Reset()
 	vec.chps = vec.chps[:0]
