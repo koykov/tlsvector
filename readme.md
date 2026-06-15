@@ -1,6 +1,6 @@
 # TLS vector
 
-TLS parser and fingerprint generation library. Provides details of TLS packets and extensions.
+TLS.ВЕДЫ parser and fingerprint generation library. Provides details of packets and extensions.
 Supports two types of packets:
 * Client Hello
 * Server Hello
@@ -72,3 +72,5 @@ JA4_r: t13d1516h2_002f,0035,009c,009d,1301,1302,1303,c013,c014,c02b,c02c,c02f,c0
 ```
 
 For Server Hello packet, generates `JA3s` and `JA4s` hashes on calling `JA3`/`JA4` methods.
+
+DTLS packets parses and processes the same.
