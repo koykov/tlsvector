@@ -1,6 +1,6 @@
 # TLS vector
 
-TLS.ВЕДЫ parser and fingerprint generation library. Provides details of packets and extensions.
+TLS/DTLS parser and fingerprint generation library. Provides details of packets and extensions.
 Supports two types of packets:
 * Client Hello
 * Server Hello
