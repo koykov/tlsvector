@@ -26,7 +26,7 @@ type ExtensionDescriptor interface {
 
 type Extension struct {
 	Type ExtensionType
-	Data byteptr.Byteptr
+	Data byteptr.Pointer
 }
 
 func (e *Extension) AppendDescription(dst []byte, pad string) []byte {

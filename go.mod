@@ -4,7 +4,7 @@ go 1.22
 
 require (
 	github.com/koykov/byteconv v1.0.1
-	github.com/koykov/byteptr v1.0.1
+	github.com/koykov/byteptr v1.0.2
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/text v0.22.0
 )

@@ -71,9 +71,9 @@ type vector struct {
 	frgo uint32          // fragment offset (DTLS only)
 	frgl uint32          // fragment length (DTLS only)
 	mver Version         // TLS version (legacy)
-	rand byteptr.Byteptr // client random
+	rand byteptr.Pointer // client random
 	sid  uint64          // session ID
-	cook byteptr.Byteptr // cookie
+	cook byteptr.Pointer // cookie
 	chps []CipherSuite   // cipher suites
 	cmpl uint8           // compression method
 	cmps uint8           // compression method
